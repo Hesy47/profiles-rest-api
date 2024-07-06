@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from profiles_api import serializers
@@ -12,7 +13,7 @@ class HelloApiView(APIView):
     def get(self, request, format=None):
         """Returns a list of APIView features"""
         an_api_view = [
-            "Uses HTTP methods as function: (get, post ,put, patch, delete).",
+            "Uses HTTP methods as function: (get, post, put, patch, delete).",
             "Is similar to a traditional Django view.",
             "Gives you the most control over your application logic",
             "IS mapped manually to your urls",
@@ -42,3 +43,46 @@ class HelloApiView(APIView):
     def delete(self, request, pk=None):
         """Delete an object"""
         return Response({"methods": "delete"}, status=status.HTTP_200_OK)
+
+
+class HelloViewSet(viewsets.ViewSet):
+    """Test API ViewSet"""
+
+    serializer_class = serializers.HelloSerializer
+
+    def list(self, request):
+        """Return a hello message"""
+        a_view_set = [
+            "Uses actions: (list, create, retrieve, update, partial_update, destroy).",
+            "Automatically maps to URLs by using routers",
+            "Provides more functionality with less code",
+        ]
+        return Response({"message": "Hello Amir", "the_view_set": a_view_set})
+
+    def create(self, request):
+        """Create a new hello message"""
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            name = serializer.validated_data.get("name")
+            message = f"Hello Mr {name}, welcome to your Admin panel"
+            return Response({"message": message}, status=status.HTTP_202_ACCEPTED)
+
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        """Handel getting a object by it id"""
+        return Response({"http_method": "GET"}, status=status.HTTP_200_OK)
+
+    def update(self, request, pk=None):
+        """Handel updating a object by it id"""
+        return Response({"http_method": "PUT"}, status=status.HTTP_200_OK)
+
+    def partial_update(self, request, pk=None):
+        """Handel updating a part of the object by it id"""
+        return Response({"http_method": "PATCH"}, status=status.HTTP_200_OK)
+
+    def destroy(self, request, pk=None):
+        """Handel removing a object by it id"""
+        return Response({"http_method": "DELETE"}, status=status.HTTP_200_OK)

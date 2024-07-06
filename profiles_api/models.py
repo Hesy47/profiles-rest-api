@@ -22,8 +22,8 @@ class UserProfileManager(BaseUserManager):
     def create_superuser(self, email, name, password):
         """Create a new superuser"""
         user = self.create_user(email, name, password)
-        user.is_superuser=True
-        user.is_staff=True
+        user.is_superuser = True
+        user.is_staff = True
         user.save(using=self._db)
 
         return user
@@ -52,4 +52,3 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """The representation of our UserProfile"""
         return self.email
-
